@@ -20,12 +20,6 @@ class EmailDomainDnsChecker
             return false;
         }
 
-        foreach (['MX', 'A', 'AAAA'] as $recordType) {
-            if ($this->dnsRecordChecker->hasRecords($normalizedDomain, $recordType)) {
-                return true;
-            }
-        }
-
-        return false;
+        return array_any(['MX', 'A', 'AAAA'], fn (string $recordType): bool => $this->dnsRecordChecker->hasRecords($normalizedDomain, $recordType));
     }
 }
