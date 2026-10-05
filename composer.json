@@ -36,8 +36,8 @@
     ],
     "require": {
         "php": "^8.4",
-        "laravel/framework": "^12.0",
         "laravel/fortify": "^1.36",
+        "laravel/framework": "^12.0 || ^13.0",
         "laravel/sanctum": "^4.3",
         "zairakai/laravel-essentials": "^2.0"
     },
@@ -47,12 +47,12 @@
         "larastan/larastan": "^3.9",
         "laravel/pint": "^1.27",
         "nunomaduro/phpinsights": "^2.13",
-        "orchestra/testbench": "^10.0",
+        "orchestra/testbench": "^10.0 || ^11.0",
         "phpmetrics/phpmetrics": "^2.9",
         "phpstan/phpstan": "^2.1",
         "phpunit/phpunit": "^12.0",
         "rector/rector": "^2.3",
-        "zairakai/laravel-dev-tools": "^2.0"
+        "zairakai/laravel-dev-tools": "^3.0"
     },
     "suggest": {
         "ergebnis/composer-normalize": "Automated composer.json normalization"
