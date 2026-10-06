@@ -56,6 +56,10 @@ make quality
 make test-all
 ```
 
+## Statistics
+
+![Statistics of laravel-auth][stats-card]
+
 [docs]: https://laravel-auth-279d17.gitlab.io
 [docs-badge]: https://img.shields.io/badge/docs-online-blue
 [gitlab-release-badge]: https://img.shields.io/gitlab/v/release/zairakai/php-packages/laravel-auth?logo=gitlab
@@ -65,3 +69,4 @@ make test-all
 [downloads-badge]: https://img.shields.io/packagist/dt/zairakai/laravel-auth
 [license-badge]: https://img.shields.io/badge/license-MIT-blue.svg
 [license]: ./LICENSE
+[stats-card]: https://gitlab.com/zairakai/gitlab-profile/-/raw/main/assets/projects/laravel-auth.svg
