@@ -37,14 +37,14 @@
     "require": {
         "php": "^8.4",
         "laravel/fortify": "^1.41",
-        "laravel/framework": "^12.0 || ^13.36",
+        "laravel/framework": "^12.0 || ^13.38",
         "laravel/sanctum": "^4.3.3",
-        "zairakai/laravel-essentials": "^2.0.13"
+        "zairakai/laravel-essentials": "^2.0.15"
     },
     "require-dev": {
         "ergebnis/composer-normalize": "^2.54",
         "orchestra/testbench": "^10.0 || ^11.3",
-        "phpunit/phpunit": "^12.5.39",
+        "phpunit/phpunit": "^12.5.40",
         "zairakai/laravel-dev-tools": "^4.3.1"
     },
     "suggest": {
