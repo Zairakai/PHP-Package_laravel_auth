@@ -39,13 +39,13 @@
         "laravel/fortify": "^1.41",
         "laravel/framework": "^12.0 || ^13.40",
         "laravel/sanctum": "^4.3.3",
-        "zairakai/laravel-essentials": "^2.0.16"
+        "zairakai/laravel-essentials": "^2.0.17"
     },
     "require-dev": {
         "ergebnis/composer-normalize": "^2.56",
         "orchestra/testbench": "^10.0 || ^11.3",
         "phpunit/phpunit": "^12.5.43",
-        "zairakai/laravel-dev-tools": "^4.10.0"
+        "zairakai/laravel-dev-tools": "^4.11.0"
     },
     "suggest": {
         "ergebnis/composer-normalize": "Automated composer.json normalization"
