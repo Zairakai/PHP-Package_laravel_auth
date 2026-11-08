@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "57cc976bc0eea6e0e621537db1e4b2b9",
+    "content-hash": "8a6bc5d20ce95f61ce5a36ec3d2dd26d",
     "packages": [
         {
             "name": "bacon/bacon-qr-code",
@@ -14278,16 +14278,16 @@
         },
         {
             "name": "zairakai/laravel-dev-tools",
-            "version": "4.12.0",
+            "version": "4.12.1",
             "source": {
                 "type": "git",
                 "url": "https://gitlab.com/zairakai/php-packages/laravel-dev-tools.git",
-                "reference": "466a268cd91ed3ff45818e3d2c3866a6235335b1"
+                "reference": "9e8fdd2897ca8974e9d96bac0e4aa705a597e751"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://gitlab.com/api/v4/projects/zairakai%2Fphp-packages%2Flaravel-dev-tools/repository/archive.zip?sha=466a268cd91ed3ff45818e3d2c3866a6235335b1",
-                "reference": "466a268cd91ed3ff45818e3d2c3866a6235335b1",
+                "url": "https://gitlab.com/api/v4/projects/zairakai%2Fphp-packages%2Flaravel-dev-tools/repository/archive.zip?sha=9e8fdd2897ca8974e9d96bac0e4aa705a597e751",
+                "reference": "9e8fdd2897ca8974e9d96bac0e4aa705a597e751",
                 "shasum": ""
             },
             "require": {
@@ -14390,7 +14390,7 @@
                     "type": "patreon"
                 }
             ],
-            "time": "2026-11-08T16:48:10+00:00"
+            "time": "2026-11-08T17:05:06+00:00"
         }
     ],
     "aliases": [],
