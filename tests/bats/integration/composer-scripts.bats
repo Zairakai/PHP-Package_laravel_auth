@@ -7,11 +7,11 @@
 load '../helpers/test_helper'
 
 setup() {
-    setup_test_env
+  setup_test_env
 }
 
 teardown() {
-    teardown_test_env
+  teardown_test_env
 }
 
 # ============================================================================
@@ -19,31 +19,31 @@ teardown() {
 # ============================================================================
 
 @test "vendor/ directory exists (composer install was run)" {
-    assert_dir_exists "${PROJECT_ROOT}/vendor"
+  assert_dir_exists "${PROJECT_ROOT}/vendor"
 }
 
 @test "vendor/zairakai/laravel-dev-tools is installed" {
-    assert_dir_exists "${PROJECT_ROOT}/vendor/zairakai/laravel-dev-tools"
+  assert_dir_exists "${PROJECT_ROOT}/vendor/zairakai/laravel-dev-tools"
 }
 
 @test "vendor/phpunit/phpunit is installed" {
-    assert_dir_exists "${PROJECT_ROOT}/vendor/phpunit/phpunit"
+  assert_dir_exists "${PROJECT_ROOT}/vendor/phpunit/phpunit"
 }
 
 @test "vendor/phpstan/phpstan is installed" {
-    assert_dir_exists "${PROJECT_ROOT}/vendor/phpstan/phpstan"
+  assert_dir_exists "${PROJECT_ROOT}/vendor/phpstan/phpstan"
 }
 
 @test "vendor/laravel/pint is installed" {
-    assert_dir_exists "${PROJECT_ROOT}/vendor/laravel/pint"
+  assert_dir_exists "${PROJECT_ROOT}/vendor/laravel/pint"
 }
 
 @test "vendor/laravel/fortify is installed" {
-    assert_dir_exists "${PROJECT_ROOT}/vendor/laravel/fortify"
+  assert_dir_exists "${PROJECT_ROOT}/vendor/laravel/fortify"
 }
 
 @test "vendor/laravel/sanctum is installed" {
-    assert_dir_exists "${PROJECT_ROOT}/vendor/laravel/sanctum"
+  assert_dir_exists "${PROJECT_ROOT}/vendor/laravel/sanctum"
 }
 
 # ============================================================================
@@ -51,24 +51,24 @@ teardown() {
 # ============================================================================
 
 @test "phpstan.sh script exists and is executable" {
-    local script="${PROJECT_ROOT}/vendor/zairakai/laravel-dev-tools/scripts/phpstan.sh"
+  local script="${PROJECT_ROOT}/vendor/zairakai/laravel-dev-tools/scripts/phpstan.sh"
 
-    assert_file_exists "$script"
-    [ -x "$script" ]
+  assert_file_exists "$script"
+  [ -x "$script" ]
 }
 
 @test "cs-check.sh script exists and is executable" {
-    local script="${PROJECT_ROOT}/vendor/zairakai/laravel-dev-tools/scripts/cs-check.sh"
+  local script="${PROJECT_ROOT}/vendor/zairakai/laravel-dev-tools/scripts/cs-check.sh"
 
-    assert_file_exists "$script"
-    [ -x "$script" ]
+  assert_file_exists "$script"
+  [ -x "$script" ]
 }
 
 @test "test.sh script exists and is executable" {
-    local script="${PROJECT_ROOT}/vendor/zairakai/laravel-dev-tools/scripts/test.sh"
+  local script="${PROJECT_ROOT}/vendor/zairakai/laravel-dev-tools/scripts/test.sh"
 
-    assert_file_exists "$script"
-    [ -x "$script" ]
+  assert_file_exists "$script"
+  [ -x "$script" ]
 }
 
 # ============================================================================
@@ -76,20 +76,20 @@ teardown() {
 # ============================================================================
 
 @test "php binary is available" {
-    run command -v php
-    [ "$status" -eq 0 ]
+  run command -v php
+  [ "$status" -eq 0 ]
 }
 
 @test "phpunit binary is available via vendor" {
-    assert_file_exists "${PROJECT_ROOT}/vendor/bin/phpunit"
+  assert_file_exists "${PROJECT_ROOT}/vendor/bin/phpunit"
 }
 
 @test "phpstan binary is available via vendor" {
-    assert_file_exists "${PROJECT_ROOT}/vendor/bin/phpstan"
+  assert_file_exists "${PROJECT_ROOT}/vendor/bin/phpstan"
 }
 
 @test "pint binary is available via vendor" {
-    assert_file_exists "${PROJECT_ROOT}/vendor/bin/pint"
+  assert_file_exists "${PROJECT_ROOT}/vendor/bin/pint"
 }
 
 # ============================================================================
@@ -97,9 +97,9 @@ teardown() {
 # ============================================================================
 
 @test "Makefile includes dev-tools targets" {
-    assert_file_contains "${PROJECT_ROOT}/Makefile" "include"
+  assert_file_contains "${PROJECT_ROOT}/Makefile" "include"
 }
 
 @test "phpstan.neon includes a config source" {
-    assert_file_contains "${PROJECT_ROOT}/phpstan.neon" "includes"
+  assert_file_contains "${PROJECT_ROOT}/phpstan.neon" "includes"
 }
