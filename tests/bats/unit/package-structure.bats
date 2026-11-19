@@ -71,16 +71,17 @@ teardown() {
     assert_file_exists "${PROJECT_ROOT}/Makefile"
 }
 
-@test "phpstan.neon exists" {
-    assert_file_exists "${PROJECT_ROOT}/phpstan.neon"
+@test "phpstan.neon is in config/dev-tools only" {
+    assert_file_exists "${PROJECT_ROOT}/config/dev-tools/phpstan.neon"
+    [ ! -e "${PROJECT_ROOT}/phpstan.neon" ]
 }
 
 @test "config/dev-tools/ directory exists" {
     assert_dir_exists "${PROJECT_ROOT}/config/dev-tools"
 }
 
-@test "config/dev-tools/insights.php exists" {
-    assert_file_exists "${PROJECT_ROOT}/config/dev-tools/insights.php"
+@test "config/dev-tools/phpinsights.php exists" {
+    assert_file_exists "${PROJECT_ROOT}/config/dev-tools/phpinsights.php"
 }
 
 @test ".editorconfig exists" {

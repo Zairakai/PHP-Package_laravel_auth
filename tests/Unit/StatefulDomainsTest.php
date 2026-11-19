@@ -15,12 +15,12 @@ final class StatefulDomainsTest extends TestCase
     {
         $domains = StatefulDomains::parse(' localhost, localhost:3000 ,,127.0.0.1 ');
 
-        $this->assertSame(['localhost', 'localhost:3000', '127.0.0.1'], $domains);
+        self::assertSame(['localhost', 'localhost:3000', '127.0.0.1'], $domains);
     }
 
     #[Test]
     public function it_returns_an_empty_array_when_no_domains_are_defined(): void
     {
-        $this->assertSame([], StatefulDomains::parse(''));
+        self::assertSame([], StatefulDomains::parse(''));
     }
 }

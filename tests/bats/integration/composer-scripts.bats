@@ -100,6 +100,6 @@ teardown() {
     assert_file_contains "${PROJECT_ROOT}/Makefile" "include"
 }
 
-@test "phpstan.neon includes a config source" {
-    assert_file_contains "${PROJECT_ROOT}/phpstan.neon" "includes"
+@test "config/dev-tools/phpstan.neon includes a config source" {
+    assert_file_contains "${PROJECT_ROOT}/config/dev-tools/phpstan.neon" "includes"
 }
