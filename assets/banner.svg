@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="640" viewBox="0 0 1280 640">
+<defs><linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#1E293B"/><stop offset="1" stop-color="#0B1020"/></linearGradient></defs>
+<rect width="1280" height="640" fill="url(#bg)"/>
+<g transform="matrix(0.5,0,0,0.5,120,160)">
+<path d="M512,208C512,93.202 418.798,0 304,0L208,0C93.202,0 0,93.202 0,208L0,304C0,418.798 93.202,512 208,512L304,512C418.798,512 512,418.798 512,304L512,208Z" fill="#0B1020" stroke="#334155" stroke-width="6"/>
+<path d="M256,108L352,146L352,240C352,300 312,344 256,372C200,344 160,300 160,240L160,146Z" fill="none" stroke="#F8FAFC" stroke-width="30" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="256" cy="212" r="30" fill="#FF2D20"/>
+<path d="M256,232L256,290" fill="none" stroke="#FF2D20" stroke-width="26" stroke-linecap="round"/>
+<circle cx="116" cy="440" r="20" fill="#F05340"/>
+<circle cx="186" cy="440" r="20" fill="#2563A8"/>
+<circle cx="256" cy="440" r="20" fill="#3E9B53"/>
+<circle cx="326" cy="440" r="20" fill="#6D4AC4"/>
+<circle cx="396" cy="440" r="20" fill="#0F766E"/>
+</g>
+<text x="440" y="270" font-family="'Segoe UI', 'DejaVu Sans', sans-serif" font-weight="700" font-size="72" fill="#F8FAFC">Laravel Auth</text>
+<text x="444" y="340" font-family="'Segoe UI', 'DejaVu Sans', sans-serif" font-size="34" fill="#CBD5E1">Headless Fortify and Sanctum bridge.</text>
+<rect x="120" y="490" width="164" height="52" rx="26" fill="#F05340"/><text x="202.0" y="525" text-anchor="middle" font-family="'DejaVu Sans', sans-serif" font-weight="400" font-size="24" fill="white" stroke="white" stroke-width="0.8" stroke-linejoin="round">Fortify</text>
+<rect x="300" y="490" width="164" height="52" rx="26" fill="#2563A8"/><text x="382.0" y="525" text-anchor="middle" font-family="'DejaVu Sans', sans-serif" font-weight="400" font-size="24" fill="white" stroke="white" stroke-width="0.8" stroke-linejoin="round">Sanctum</text>
+<rect x="480" y="490" width="195" height="52" rx="26" fill="#3E9B53"/><text x="577.5" y="525" text-anchor="middle" font-family="'DejaVu Sans', sans-serif" font-weight="400" font-size="24" fill="white" stroke="white" stroke-width="0.8" stroke-linejoin="round">Responses</text>
+<rect x="691" y="490" width="241" height="52" rx="26" fill="#6D4AC4"/><text x="811.5" y="525" text-anchor="middle" font-family="'DejaVu Sans', sans-serif" font-weight="400" font-size="24" fill="white" stroke="white" stroke-width="0.8" stroke-linejoin="round">Email filter</text>
+</svg>
