@@ -3,6 +3,12 @@
 declare(strict_types=1);
 
 return [
+    // Set to false to keep the fortify.* and sanctum.* settings of the application: the package then leaves them as they are.
+    'configure_runtime' => env('ZAIRAKAI_AUTH_CONFIGURE_RUNTIME', true),
+
+    // Set to false when the migration is published in the application (php artisan vendor:publish --tag=zairakai-migrations).
+    'load_migrations' => env('ZAIRAKAI_AUTH_LOAD_MIGRATIONS', true),
+
     'fortify' => [
         'guard'               => env('ZAIRAKAI_AUTH_GUARD', 'web'),
         'passwords'           => env('ZAIRAKAI_AUTH_PASSWORDS', 'users'),
@@ -53,10 +59,13 @@ return [
     'email_filter' => [
         'enabled'         => env('ZAIRAKAI_AUTH_EMAIL_FILTER_ENABLED', true),
         'check_dns'       => env('ZAIRAKAI_AUTH_EMAIL_FILTER_CHECK_DNS', true),
-        'check_blocklist' => env('ZAIRAKAI_AUTH_EMAIL_FILTER_CHECK_BLOCKLIST', true),
-        'cache_ttl'       => (int) env('ZAIRAKAI_AUTH_EMAIL_FILTER_CACHE_TTL', 86400),
-        'cache_prefix'    => env('ZAIRAKAI_AUTH_EMAIL_FILTER_CACHE_PREFIX', 'laravel-auth:blocked-email-domain:'),
-        'apply_to'        => [
+        // The DNS records of which one is enough for a domain to receive mail. MX: a mail server is declared. RFC 5321 also
+        // lets a domain without MX receive mail on its A or AAAA record: add 'A' and 'AAAA' to accept those.
+        'dns_record_types' => ['MX'],
+        'check_blocklist'  => env('ZAIRAKAI_AUTH_EMAIL_FILTER_CHECK_BLOCKLIST', true),
+        'cache_ttl'        => (int) env('ZAIRAKAI_AUTH_EMAIL_FILTER_CACHE_TTL', 86400),
+        'cache_prefix'     => env('ZAIRAKAI_AUTH_EMAIL_FILTER_CACHE_PREFIX', 'laravel-auth:blocked-email-domain:'),
+        'apply_to'         => [
             'registration' => true,
             'email_update' => true,
             'login'        => false,

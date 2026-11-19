@@ -8,8 +8,12 @@ use Zairakai\LaravelAuth\Contracts\DnsRecordChecker;
 
 class EmailDomainDnsChecker
 {
+    /**
+     * @param array<int, string> $recordTypes the records that prove the domain can receive mail (one is enough)
+     */
     public function __construct(
         protected DnsRecordChecker $dnsRecordChecker,
+        protected array $recordTypes = ['MX'],
     ) {}
 
     public function canReceiveMail(string $domain): bool
@@ -20,6 +24,9 @@ class EmailDomainDnsChecker
             return false;
         }
 
-        return array_any(['MX', 'A', 'AAAA'], fn (string $recordType): bool => $this->dnsRecordChecker->hasRecords($normalizedDomain, $recordType));
+        return array_any(
+            $this->recordTypes,
+            fn (string $recordType): bool => $this->dnsRecordChecker->hasRecords($normalizedDomain, $recordType),
+        );
     }
 }

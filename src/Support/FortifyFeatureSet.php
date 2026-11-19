@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Zairakai\LaravelAuth\Support;
 
+use Closure;
 use Laravel\Fortify\Features;
 
 class FortifyFeatureSet
@@ -17,39 +18,51 @@ class FortifyFeatureSet
     {
         $resolved = [];
 
-        if (true === ($features['registration'] ?? false)) {
-            $resolved[] = Features::registration();
+        foreach (self::simpleFeatures() as $key => $feature) {
+            if (true === ($features[$key] ?? false)) {
+                $resolved[] = $feature();
+            }
         }
 
-        if (true === ($features['reset-passwords'] ?? false)) {
-            $resolved[] = Features::resetPasswords();
+        $twoFactor = self::twoFactor($features['two-factor-authentication'] ?? false);
+
+        if (null !== $twoFactor) {
+            $resolved[] = $twoFactor;
         }
 
-        if (true === ($features['email-verification'] ?? false)) {
-            $resolved[] = Features::emailVerification();
-        }
+        return $resolved;
+    }
 
-        if (true === ($features['update-profile-information'] ?? false)) {
-            $resolved[] = Features::updateProfileInformation();
-        }
+    /**
+     * @return array<string, Closure(): string>
+     */
+    private static function simpleFeatures(): array
+    {
+        return [
+            'registration'               => Features::registration(...),
+            'reset-passwords'            => Features::resetPasswords(...),
+            'email-verification'         => Features::emailVerification(...),
+            'update-profile-information' => Features::updateProfileInformation(...),
+            'update-passwords'           => Features::updatePasswords(...),
+        ];
+    }
 
-        if (true === ($features['update-passwords'] ?? false)) {
-            $resolved[] = Features::updatePasswords();
-        }
-
-        $twoFactor = $features['two-factor-authentication'] ?? false;
-
+    private static function twoFactor(mixed $twoFactor): ?string
+    {
         if (true === $twoFactor) {
-            $resolved[] = Features::twoFactorAuthentication();
+            return Features::twoFactorAuthentication();
         }
 
-        if (is_array($twoFactor) && true === ($twoFactor['enabled'] ?? false)) {
-            $resolved[] = Features::twoFactorAuthentication([
+        if (
+            is_array($twoFactor)
+            && true === ($twoFactor['enabled'] ?? false)
+        ) {
+            return Features::twoFactorAuthentication([
                 'confirm'         => $twoFactor['confirm']          ?? true,
                 'confirmPassword' => $twoFactor['confirm_password'] ?? true,
             ]);
         }
 
-        return $resolved;
+        return null;
     }
 }

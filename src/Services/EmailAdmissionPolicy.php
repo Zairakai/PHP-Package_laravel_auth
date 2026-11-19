@@ -17,11 +17,10 @@ class EmailAdmissionPolicy
 
     public function inspect(string $email, string $context = 'registration'): EmailAdmissionResult
     {
-        if (! $this->isEnabled()) {
-            return EmailAdmissionResult::allow();
-        }
-
-        if (! $this->appliesTo($context)) {
+        if (
+            ! $this->isEnabled()
+            || ! $this->appliesTo($context)
+        ) {
             return EmailAdmissionResult::allow();
         }
 
@@ -31,12 +30,10 @@ class EmailAdmissionPolicy
             return EmailAdmissionResult::deny('invalid_email_domain');
         }
 
-        if ($this->checksDns() && ! $this->emailDomainDnsChecker->canReceiveMail($domain)) {
-            return EmailAdmissionResult::deny('unresolvable_email_domain');
-        }
+        $reason = $this->denialReason($domain);
 
-        if ($this->checksBlocklist() && $this->blockedEmailDomainRepository->contains($domain)) {
-            return EmailAdmissionResult::deny('blocked_email_domain');
+        if (null !== $reason) {
+            return EmailAdmissionResult::deny($reason);
         }
 
         return EmailAdmissionResult::allow();
@@ -55,6 +52,26 @@ class EmailAdmissionPolicy
     protected function checksDns(): bool
     {
         return (bool) config('laravel-auth.email_filter.check_dns', true);
+    }
+
+    protected function denialReason(string $domain): ?string
+    {
+        // The blocklist is cached and light: it goes first, so that a blocked domain costs no DNS query
+        if (
+            $this->checksBlocklist()
+            && $this->blockedEmailDomainRepository->contains($domain)
+        ) {
+            return 'blocked_email_domain';
+        }
+
+        if (
+            $this->checksDns()
+            && ! $this->emailDomainDnsChecker->canReceiveMail($domain)
+        ) {
+            return 'unresolvable_email_domain';
+        }
+
+        return null;
     }
 
     protected function isEnabled(): bool
