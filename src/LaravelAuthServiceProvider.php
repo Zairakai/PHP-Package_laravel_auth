@@ -24,14 +24,31 @@ use Zairakai\LaravelAuth\Support\StatefulDomains;
 
 class LaravelAuthServiceProvider extends ServiceProvider
 {
+    private const string MIGRATION = '2026_04_22_000000_create_blocked_email_domains_table.php';
+
     public function boot(): void
     {
-        $this->loadMigrationsFrom(__DIR__ . '/../database/migrations');
+        if ((bool) config('laravel-auth.load_migrations', true)) {
+            $this->loadMigrationsFrom(__DIR__ . '/../database/migrations');
+        }
+
+        $this->loadTranslationsFrom(__DIR__ . '/../resources/lang', 'laravel-auth');
 
         if ($this->app->runningInConsole()) {
             $this->publishes([
                 __DIR__ . '/../config/laravel-auth.php' => config_path('laravel-auth.php'),
             ], 'zairakai-config');
+
+            // The same file name as in the package: publishing again with --force replaces it
+            $migration = self::MIGRATION;
+
+            $this->publishes([
+                __DIR__ . '/../database/migrations/' . $migration => database_path('migrations/' . $migration),
+            ], 'zairakai-migrations');
+
+            $this->publishes([
+                __DIR__ . '/../resources/lang' => lang_path('vendor/laravel-auth'),
+            ], 'zairakai-translations');
         }
     }
 
@@ -42,8 +59,11 @@ class LaravelAuthServiceProvider extends ServiceProvider
         /** @var ConfigRepository $configRepository */
         $configRepository = $this->app->make('config');
 
-        $this->configureFortify($configRepository);
-        $this->configureSanctum($configRepository);
+        if ((bool) $configRepository->get('laravel-auth.configure_runtime', true)) {
+            $this->configureFortify($configRepository);
+            $this->configureSanctum($configRepository);
+        }
+
         $this->registerEmailFilterBindings();
         $this->registerResponseBindings();
     }
@@ -51,13 +71,19 @@ class LaravelAuthServiceProvider extends ServiceProvider
     protected function configureFortify(ConfigRepository $configRepository): void
     {
         $fortifyConfig  = $configRepository->get('laravel-auth.fortify', []);
-        $fortify        = is_array($fortifyConfig) ? $fortifyConfig : [];
+        $fortify        = is_array($fortifyConfig)
+            ? $fortifyConfig
+            : [];
         $redirectConfig = $configRepository->get('laravel-auth.redirects', []);
-        $redirects      = is_array($redirectConfig) ? $redirectConfig : [];
+        $redirects      = is_array($redirectConfig)
+            ? $redirectConfig
+            : [];
         $featureConfig  = $configRepository->get('laravel-auth.features', []);
 
         /** @var array<string, mixed> $features */
-        $features       = is_array($featureConfig) ? $featureConfig : [];
+        $features = is_array($featureConfig)
+            ? $featureConfig
+            : [];
 
         $configRepository->set('fortify.guard', $fortify['guard'] ?? 'web');
         $configRepository->set('fortify.passwords', $fortify['passwords'] ?? 'users');
@@ -84,21 +110,48 @@ class LaravelAuthServiceProvider extends ServiceProvider
     protected function configureSanctum(ConfigRepository $configRepository): void
     {
         $sanctumConfig   = $configRepository->get('laravel-auth.sanctum', []);
-        $sanctum         = is_array($sanctumConfig) ? $sanctumConfig : [];
+        $sanctum         = is_array($sanctumConfig)
+            ? $sanctumConfig
+            : [];
         $statefulDomains = $sanctum['stateful'] ?? '';
 
         $configRepository->set(
             'sanctum.stateful',
-            StatefulDomains::parse(is_string($statefulDomains) ? $statefulDomains : ''),
+            StatefulDomains::parse(
+                is_string($statefulDomains)
+                    ? $statefulDomains
+                    : '',
+            ),
         );
         $configRepository->set('sanctum.guard', $sanctum['guard'] ?? ['web']);
+    }
+
+    /**
+     * @return array<int, string>
+     */
+    protected function dnsRecordTypes(): array
+    {
+        $configured = config('laravel-auth.email_filter.dns_record_types', ['MX']);
+        $types      = is_array($configured)
+            ? array_values(array_filter($configured, is_string(...)))
+            : [];
+
+        return [] === $types
+            ? ['MX']
+            : array_map(strtoupper(...), $types);
     }
 
     protected function registerEmailFilterBindings(): void
     {
         $this->app->singleton(DnsRecordChecker::class, NativeDnsRecordChecker::class);
         $this->app->singleton(EmailDomainNormalizer::class);
-        $this->app->singleton(EmailDomainDnsChecker::class);
+        $this->app->singleton(
+            EmailDomainDnsChecker::class,
+            fn (): EmailDomainDnsChecker => new EmailDomainDnsChecker(
+                $this->app->make(DnsRecordChecker::class),
+                $this->dnsRecordTypes(),
+            ),
+        );
         $this->app->singleton(BlockedEmailDomainRepository::class);
         $this->app->singleton(EmailAdmissionPolicy::class);
         $this->app->bind(PublicEmailDomain::class);

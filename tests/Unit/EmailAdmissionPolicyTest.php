@@ -13,15 +13,75 @@ use Zairakai\LaravelAuth\Tests\TestCase;
 final class EmailAdmissionPolicyTest extends TestCase
 {
     #[Test]
+    public function it_allows_a_lookalike_domain_that_is_not_blocked_and_receives_mail(): void
+    {
+        $this->mockDns(['xn--gmil-63d.com' => ['MX' => true]]);
+
+        $emailAdmissionResult = resolve(EmailAdmissionPolicy::class)->inspect("john@gm\u{0430}il.com", 'registration');
+
+        self::assertTrue($emailAdmissionResult->allowed);
+    }
+
+    #[Test]
+    public function it_allows_an_international_domain_that_exists_and_receives_mail(): void
+    {
+        $this->mockDns(['xn--e1afmkfd.xn--p1ai' => ['MX' => true]]);
+
+        $emailAdmissionResult = resolve(EmailAdmissionPolicy::class)->inspect('иван@пример.рф', 'registration');
+
+        self::assertTrue($emailAdmissionResult->allowed);
+        self::assertNull($emailAdmissionResult->reason);
+    }
+
+    #[Test]
     public function it_allows_registration_when_the_domain_passes_all_checks(): void
     {
         $this->mockDns(['gmail.com' => ['MX' => true]]);
 
-        $emailAdmissionPolicy = $this->app->make(EmailAdmissionPolicy::class);
+        $emailAdmissionPolicy = resolve(EmailAdmissionPolicy::class);
         $emailAdmissionResult = $emailAdmissionPolicy->inspect('john@gmail.com', 'registration');
 
-        $this->assertTrue($emailAdmissionResult->allowed);
-        $this->assertNull($emailAdmissionResult->reason);
+        self::assertTrue($emailAdmissionResult->allowed);
+        self::assertNull($emailAdmissionResult->reason);
+    }
+
+    #[Test]
+    public function it_checks_the_blocklist_before_the_dns_so_that_a_blocked_domain_costs_no_query(): void
+    {
+        BlockedEmailDomain::query()->create(['domain' => 'mailinator.com']);
+
+        $checker = new class implements DnsRecordChecker
+        {
+            public int $queries = 0;
+
+            public function hasRecords(string $domain, string $type): bool
+            {
+                $this->queries++;
+
+                return false;
+            }
+        };
+
+        app()->instance(DnsRecordChecker::class, $checker);
+
+        $emailAdmissionResult = resolve(EmailAdmissionPolicy::class)->inspect('john@mailinator.com', 'registration');
+
+        self::assertSame('blocked_email_domain', $emailAdmissionResult->reason);
+        self::assertSame(0, $checker->queries);
+    }
+
+    #[Test]
+    public function it_rejects_a_lookalike_domain_that_is_blocked_whatever_its_form(): void
+    {
+        BlockedEmailDomain::query()->create(['domain' => "gm\u{0430}il.com"]);
+
+        $this->mockDns(['xn--gmil-63d.com' => ['MX' => true]]);
+
+        foreach (["john@gm\u{0430}il.com", "JOHN@GM\u{0410}IL.COM", 'john@xn--gmil-63d.com'] as $email) {
+            $emailAdmissionResult = resolve(EmailAdmissionPolicy::class)->inspect($email, 'registration');
+
+            self::assertSame('blocked_email_domain', $emailAdmissionResult->reason, $email);
+        }
     }
 
     #[Test]
@@ -29,11 +89,11 @@ final class EmailAdmissionPolicyTest extends TestCase
     {
         $this->mockDns(['gamil.com' => ['MX' => false, 'A' => false, 'AAAA' => false]]);
 
-        $emailAdmissionPolicy = $this->app->make(EmailAdmissionPolicy::class);
+        $emailAdmissionPolicy = resolve(EmailAdmissionPolicy::class);
         $emailAdmissionResult = $emailAdmissionPolicy->inspect('john@gamil.com', 'registration');
 
-        $this->assertFalse($emailAdmissionResult->allowed);
-        $this->assertSame('unresolvable_email_domain', $emailAdmissionResult->reason);
+        self::assertFalse($emailAdmissionResult->allowed);
+        self::assertSame('unresolvable_email_domain', $emailAdmissionResult->reason);
     }
 
     #[Test]
@@ -45,11 +105,11 @@ final class EmailAdmissionPolicyTest extends TestCase
             'domain' => 'mailinator.com',
         ]);
 
-        $emailAdmissionPolicy = $this->app->make(EmailAdmissionPolicy::class);
+        $emailAdmissionPolicy = resolve(EmailAdmissionPolicy::class);
         $emailAdmissionResult = $emailAdmissionPolicy->inspect('john@mailinator.com', 'registration');
 
-        $this->assertFalse($emailAdmissionResult->allowed);
-        $this->assertSame('blocked_email_domain', $emailAdmissionResult->reason);
+        self::assertFalse($emailAdmissionResult->allowed);
+        self::assertSame('blocked_email_domain', $emailAdmissionResult->reason);
     }
 
     #[Test]
@@ -61,10 +121,10 @@ final class EmailAdmissionPolicyTest extends TestCase
             'domain' => 'unknown.test',
         ]);
 
-        $emailAdmissionPolicy = $this->app->make(EmailAdmissionPolicy::class);
+        $emailAdmissionPolicy = resolve(EmailAdmissionPolicy::class);
         $emailAdmissionResult = $emailAdmissionPolicy->inspect('john@unknown.test', 'login');
 
-        $this->assertTrue($emailAdmissionResult->allowed);
+        self::assertTrue($emailAdmissionResult->allowed);
     }
 
     /**
@@ -87,6 +147,6 @@ final class EmailAdmissionPolicyTest extends TestCase
             }
         };
 
-        $this->app->instance(DnsRecordChecker::class, $mock);
+        app()->instance(DnsRecordChecker::class, $mock);
     }
 }
