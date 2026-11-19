@@ -18,17 +18,27 @@ final class EmailDomainDnsCheckerTest extends TestCase
             'gmail.com' => ['MX' => true],
         ]));
 
-        $this->assertTrue($emailDomainDnsChecker->canReceiveMail('gmail.com'));
+        self::assertTrue($emailDomainDnsChecker->canReceiveMail('gmail.com'));
     }
 
     #[Test]
-    public function it_falls_back_to_a_records_when_mx_is_missing(): void
+    public function it_asks_for_a_mail_server_only_by_default(): void
+    {
+        $emailDomainDnsChecker = new EmailDomainDnsChecker($this->fakeDns([
+            'parked.example' => ['MX' => false, 'A' => true, 'AAAA' => true],
+        ]));
+
+        self::assertFalse($emailDomainDnsChecker->canReceiveMail('parked.example'));
+    }
+
+    #[Test]
+    public function it_falls_back_to_a_records_when_they_are_allowed(): void
     {
         $emailDomainDnsChecker = new EmailDomainDnsChecker($this->fakeDns([
             'gmail.fr' => ['MX' => false, 'A' => true],
-        ]));
+        ]), ['MX', 'A', 'AAAA']);
 
-        $this->assertTrue($emailDomainDnsChecker->canReceiveMail('gmail.fr'));
+        self::assertTrue($emailDomainDnsChecker->canReceiveMail('gmail.fr'));
     }
 
     #[Test]
@@ -38,7 +48,7 @@ final class EmailDomainDnsCheckerTest extends TestCase
             'gamil.com' => ['MX' => false, 'A' => false, 'AAAA' => false],
         ]));
 
-        $this->assertFalse($emailDomainDnsChecker->canReceiveMail('gamil.com'));
+        self::assertFalse($emailDomainDnsChecker->canReceiveMail('gamil.com'));
     }
 
     /**

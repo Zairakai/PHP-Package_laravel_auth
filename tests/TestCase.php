@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Zairakai\LaravelAuth\Tests;
 
+use Illuminate\Contracts\Config\Repository;
+use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Artisan;
 use Laravel\Fortify\FortifyServiceProvider;
 use Laravel\Sanctum\SanctumServiceProvider;
@@ -20,15 +22,20 @@ abstract class TestCase extends Orchestra
         Artisan::call('migrate', ['--database' => 'testing']);
     }
 
+    /**
+     * @param Application $app
+     */
     protected function defineEnvironment($app): void
     {
-        $app['config']->set('database.default', 'testing');
-        $app['config']->set('database.connections.testing', [
+        $config = $app->make(Repository::class);
+
+        $config->set('database.default', 'testing');
+        $config->set('database.connections.testing', [
             'driver'   => 'sqlite',
             'database' => ':memory:',
             'prefix'   => '',
         ]);
-        $app['config']->set('cache.default', 'array');
+        $config->set('cache.default', 'array');
     }
 
     /**

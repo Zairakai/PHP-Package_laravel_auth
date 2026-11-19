@@ -23,7 +23,7 @@ final class FortifyFeatureSetTest extends TestCase
             'two-factor-authentication'  => false,
         ]);
 
-        $this->assertSame([], $features);
+        self::assertSame([], $features);
     }
 
     #[Test]
@@ -42,7 +42,7 @@ final class FortifyFeatureSetTest extends TestCase
             ],
         ]);
 
-        $this->assertSame([
+        self::assertSame([
             Features::registration(),
             Features::resetPasswords(),
             Features::emailVerification(),

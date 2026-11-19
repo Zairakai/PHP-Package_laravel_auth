@@ -18,9 +18,54 @@ final class BlockedEmailDomainRepositoryTest extends TestCase
             'domain' => 'mailinator.com',
         ]);
 
-        $blockedEmailDomainRepository = $this->app->make(BlockedEmailDomainRepository::class);
+        $blockedEmailDomainRepository = resolve(BlockedEmailDomainRepository::class);
 
-        $this->assertTrue($blockedEmailDomainRepository->contains('mailinator.com'));
-        $this->assertFalse($blockedEmailDomainRepository->contains('example.com'));
+        self::assertTrue($blockedEmailDomainRepository->contains('mailinator.com'));
+        self::assertFalse($blockedEmailDomainRepository->contains('example.com'));
+    }
+
+    #[Test]
+    public function it_does_not_see_a_bulk_delete_before_the_blocklist_is_refreshed(): void
+    {
+        BlockedEmailDomain::query()->create(['domain' => 'mailinator.com']);
+
+        $blockedEmailDomainRepository = resolve(BlockedEmailDomainRepository::class);
+
+        self::assertTrue($blockedEmailDomainRepository->contains('mailinator.com'));
+
+        BlockedEmailDomain::query()->delete();
+
+        self::assertTrue($blockedEmailDomainRepository->contains('mailinator.com'));
+
+        $blockedEmailDomainRepository->refresh();
+
+        self::assertFalse($blockedEmailDomainRepository->contains('mailinator.com'));
+    }
+
+    #[Test]
+    public function it_does_not_see_a_bulk_insert_before_the_blocklist_is_refreshed(): void
+    {
+        $blockedEmailDomainRepository = resolve(BlockedEmailDomainRepository::class);
+
+        self::assertFalse($blockedEmailDomainRepository->contains('mailinator.com'));
+
+        BlockedEmailDomain::query()->toBase()->insert(['domain' => 'mailinator.com', 'normalized_domain' => 'mailinator.com']);
+
+        self::assertFalse($blockedEmailDomainRepository->contains('mailinator.com'));
+
+        $blockedEmailDomainRepository->refresh();
+
+        self::assertTrue($blockedEmailDomainRepository->contains('mailinator.com'));
+    }
+
+    #[Test]
+    public function it_keeps_the_whole_blocklist_in_one_cache_entry(): void
+    {
+        BlockedEmailDomain::query()->create(['domain' => 'mailinator.com']);
+        BlockedEmailDomain::query()->create(['domain' => 'spam.example']);
+
+        $cached = cache('laravel-auth:blocked-email-domain:all');
+
+        self::assertSame(['mailinator.com' => true, 'spam.example' => true], $cached);
     }
 }
