@@ -36,15 +36,15 @@
     ],
     "require": {
         "php": "^8.4",
-        "laravel/fortify": "^1.41",
-        "laravel/framework": "^12.0 || ^13.40",
-        "laravel/sanctum": "^4.3.3",
-        "zairakai/laravel-essentials": "^2.0.17"
+        "laravel/fortify": "^1.44",
+        "laravel/framework": "^12.0 || ^13.44.1",
+        "laravel/sanctum": "^4.5.0",
+        "zairakai/laravel-essentials": "^2.0.19"
     },
     "require-dev": {
-        "ergebnis/composer-normalize": "^2.56",
+        "ergebnis/composer-normalize": "^2.59",
         "orchestra/testbench": "^10.0 || ^11.3",
-        "phpunit/phpunit": "^12.5.43",
+        "phpunit/phpunit": "^12.5.45",
         "zairakai/laravel-dev-tools": "^5.5"
     },
     "suggest": {
